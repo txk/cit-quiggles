@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<!--
+  This is a sample HTML file which shows how to embed a sidebar instance of Web Chat.
+  1. Build the project: "npm run build"
+  2. Start a web server: "npm run start"
+  3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
+
+  For ease of testing, several parameters can be set in the query string:
+    * s = Direct Line secret, or
+    * t = Direct Line token (obtained by calling Direct Line's Generate Token)
+    * domain = optionally, the URL of an alternate Direct Line endpoint
+    * webSocket = set to 'true' to use WebSocket to receive messages (currently defaults to false)
+    * userid, username = id (and optionally name) of bot user
+    * botid, botname = id (and optionally name) of bot
+-->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Bot Chat</title>
+
+    <link href="./botchat.css" rel="stylesheet" />
+
+    <style>
+
+      #BotChatGoesHere {
+        border: 1px solid #333;
+        float: left;
+        position: fixed;
+        width: 460px;
+        height: 600px;
+        bottom: 20px;
+        right: 20px;
+        background-color: #ffffff;
+      }
+
+      #BotChatGoesHere.hidden {
+        display: none;
+      }
+
+      #BotChatGoesHere.show {
+        display: block;
+      }
+
+      #QuigglesGoesHere {
+        position: fixed;
+        width: 100px;
+        height: auto;
+        bottom: -80px;
+        right: 20px;
+      }
+
+      #QuigglesGoesHere.hidden {
+        display: none;
+      }
+
+    </style>
+
+    <script>
+      function toggleClassName(className) {
+        const BotChatGoesHere = document.getElementById('BotChatGoesHere');
+        BotChatGoesHere.classList.add(className);
+      }
+
+      function showBot() {
+        const BotChatGoesHere = document.getElementById('BotChatGoesHere');
+        QuigglesGoesHere.classList.add('hidden');
+        BotChatGoesHere.classList.remove('hidden');
+      }
+
+      function showQuiggles() {
+        const QuigglesGoesHere = document.getElementById('QuigglesGoesHere');
+        QuigglesGoesHere.classList.remove('hidden');
+      }
+    </script>
+  </head>
+  <body>
+    <img src="./images/cit-products.png" onclick="showQuiggles()"/>
+
+    <div id="BotChatGoesHere" class="hidden"></div>
+    
+    <img id="QuigglesGoesHere" class="hidden" src="./images/04-Quiggles-CS-talk.gif" onclick="showBot()"/>
+    
+   
+
+    <script src="./botchat.js"></script>
+    <script src="./CognitiveServices.js"></script>
+
+    <script>
+      const params = BotChat.queryParams(location.search);
+
+      const user = {
+        id: params['userid'] || 'userid',
+        name: params['username'] || 'username'
+      };
+
+      const bot = {
+        id: params['botid'] || 'botid',
+        name: params['botname'] || 'botname'
+      };
+
+      window['botchatDebug'] = params['debug'] && params['debug'] === 'true';
+
+      const speechOptions = {
+        speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '7322fe46c2f3471690dc9a29cc1d116f' }),
+        speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+          gender: CognitiveServices.SynthesisGender.Male,
+          subscriptionKey: '7322fe46c2f3471690dc9a29cc1d116f',
+          voiceName: 'Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)'
+        })
+      };
+
+      BotChat.App({
+        bot: bot,
+        locale: params['locale'],
+        resize: 'detect',
+        speechOptions: speechOptions,
+        // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
+        user: user,
+        // locale: 'es-es', // override locale to Spanish
+
+        directLine: {
+          domain: params['domain'],
+          secret: params['s'],
+          token: params['t'],
+          webSocket: params['webSocket'] && params['webSocket'] === 'true' // defaults to true
+        }
+      }, document.getElementById('BotChatGoesHere'));
+    </script>
+  </body>
+</html>
