@@ -75,11 +75,11 @@
     </script>
   </head>
   <body>
-    <img src="./images/cit-products.png" onclick="showQuiggles()"/>
+    <img src="cit-products.png" onclick="showQuiggles()"/>
 
     <div id="BotChatGoesHere" class="hidden"></div>
     
-    <img id="QuigglesGoesHere" class="hidden" src="./images/04-Quiggles-CS-talk.gif" onclick="showBot()"/>
+    <img id="QuigglesGoesHere" class="hidden" src="04-Quiggles-CS-talk.gif" onclick="showBot()"/>
     
    
 
@@ -106,9 +106,16 @@
         speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
           gender: CognitiveServices.SynthesisGender.Male,
           subscriptionKey: '7322fe46c2f3471690dc9a29cc1d116f',
-          voiceName: 'Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)'
+          voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)',
+          prosodyPitch:'high',
+          prosodyContour:'(80%,+20%) (90%,+30%)',
+          prosodyRate: '+200.00%'
         })
       };
+
+
+       
+
 
       BotChat.App({
         bot: bot,
